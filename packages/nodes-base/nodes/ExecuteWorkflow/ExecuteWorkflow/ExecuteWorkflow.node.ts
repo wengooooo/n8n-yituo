@@ -431,8 +431,22 @@ export class ExecuteWorkflow implements INodeType {
 					subExecutionsCount: 1,
 				});
 
+				// if (!waitForSubWorkflow) {
+				// 	return [items];
+				// }
 				if (!waitForSubWorkflow) {
-					return [items];
+
+					const augmentedItems = items.map((item) => ({
+					...item,
+					json: {
+					...(item.json ?? {}),
+					executionId: executionResult.executionId,
+					},
+					}));
+					
+					return [augmentedItems];
+					// return [items]
+
 				}
 
 				const workflowRunData = await this.getExecutionDataById(executionResult.executionId);
